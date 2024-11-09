@@ -1,0 +1,30 @@
+.deals-container {
+    padding: 20px;
+  }
+  
+  .create-button {
+    margin-bottom: 20px;
+  }
+  
+  .filter-buttons {
+    margin-bottom: 20px;
+  }
+  
+  .filter-button {
+    margin-right: 10px;
+  }
+  
+  .deals-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table-header {
+    border: 1px solid #ccc;
+    padding: 8px;
+  }
+  
+  .table-cell {
+    border: 1px solid #ccc;
+    padding: 8px;
+  }
