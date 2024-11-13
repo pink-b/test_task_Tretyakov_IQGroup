@@ -63,7 +63,7 @@ const AlertDialog: React.FC<AlertDialogProps> = ({ open, handleClose, title, mes
             
                 idGenerator(),
                 inputValue,
-                'Новый',
+                'new',
                 new Date().toISOString(),
             
         );

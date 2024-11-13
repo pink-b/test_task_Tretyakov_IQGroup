@@ -1,35 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import '../styles/DealPage.css';
-import { updateCompleteDeal } from '../redux/features/dealsSlice';
+import { updateCompleteDeal, updatePartialDeal, deleteDeal } from '../redux/features/dealsSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { IDeal } from '../redux/features/dealsSlice';
 import { IComment, Status, Comment, selectDeals } from '../redux/features/dealsSlice';
 import { RootState } from '../redux/store/store';
+import { StatusBar } from '../components/StatusBar';
 
 const DealPage: React.FC = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const deals = useSelector((state: RootState) => selectDeals(state));
   const { dealId } = useParams<{ dealId: string }>();
+  const deal = deals.find(deal => deal.id === Number(dealId));
 
-  // const [deals, setDeals] = useState<IDeal[]>([]);
+  if (!deal) {
+    return (
+      <div>
+        <h2>Сделка не найдена</h2>
+        <button onClick={() => navigate('/')}>Вернуться на главную</button>
+      </div>
+    );
+  }
+
   const [formData, setFormData] = useState<Omit<IDeal, 'comments'>>({
-    id: 0,
-    title: '',
-    status: 'Новый',
-    phoneNumber: '',
-    budget: 0,
-    fullName: '',
-    createdAt: new Date().toISOString(),
+    id: deal.id,
+    title: deal.title,
+    status: deal.status,
+    phoneNumber: deal.phoneNumber,
+    budget: deal.budget,
+    fullName: deal.fullName,
+    createdAt: deal.createdAt,
   });
-
-  const idGenerator = (() => {
-    console.log(deals)
-    console.log(dealId)
-    const comments = deals[Number(dealId)].comments
-    const commentId: number = comments.length > 0 ? comments[comments.length - 1]!.id : -1;
-    return commentId + 1;
-});
 
   const [comment, setComment] = useState<string>('');
   const [comments, setComments] = useState<string[]>([]);
@@ -39,15 +42,6 @@ const DealPage: React.FC = () => {
     setIsFormDirty(hasChanges);
   }, [formData, comments, comment]);
 
-  const handleAddComment = () => {
-    if (comment) {
-      setComments([...comments, comment]);
-      setComment('');
-    }
-  };
-
-  
-
   const handleCancel = () => {
     clearFields();
   };
@@ -56,7 +50,7 @@ const DealPage: React.FC = () => {
     setFormData({
       id: 0,
       title: '',
-      status: 'Новый',
+      status: 'new',
       phoneNumber: '',
       budget: 0,
       fullName: '',
@@ -82,21 +76,39 @@ const DealPage: React.FC = () => {
   };
 
   const handleSave = () => {
-    const newComment: IComment = {
-      id: idGenerator(),
-      dealId: Number(dealId),
-      text: comment,
-      createdAt: new Date().toISOString()
-  };
-  console.log(formData)
-  console.log(newComment)
-    const newDeal = {
-      ...formData,
-      comments: [...deals[Number(dealId)].comments, newComment]
+    const updatedDeal: Partial<IDeal> = {};
+  
+    Object.keys(formData).forEach((key) => {
+      const value = formData[key as keyof typeof formData];
+      const originalValue = deal[key as keyof IDeal];
+  
+      if (value !== originalValue) {
+        if (value !== undefined) {
+          updatedDeal[key as keyof IDeal] = value as any;
+        }
+      }
+    });
+  
+    if (comment) {
+      const newComment: IComment = {
+        id: deal.comments.length > 0 ? deal.comments[deal.comments.length - 1].id + 1 : 0,
+        dealId: Number(dealId),
+        text: comment,
+        createdAt: new Date().toISOString(),
+      };
+      updatedDeal.comments = [...deal.comments, newComment];
     }
-    console.log(newDeal)
-    dispatch(updateCompleteDeal(newDeal))
-    clearFields();
+  
+    dispatch(updatePartialDeal({ id: Number(dealId), ...updatedDeal }));
+    setComment('');
+    setIsFormDirty(false);
+  };
+
+  const handleDelete = () => {
+    if (window.confirm('Вы уверены, что хотите удалить эту сделку?')) {
+      dispatch(deleteDeal(Number(dealId)));
+      navigate(`/`);
+    }
   };
 
   return (
@@ -105,16 +117,9 @@ const DealPage: React.FC = () => {
       <div className="border-box">
         <div className="header">
           <h2>Тест (Название)</h2>
-          <button className="delete-button">Удалить</button>
+          <button className="delete-button" onClick={handleDelete}>Удалить</button>
         </div>
-
-        <div className="status-section">
-          <span>Статус</span>
-          <div className="progress-bar">
-            <div className="progress-fill" style={{ width: '50%' }}></div>
-          </div>
-        </div>
-
+        <StatusBar status={deal.status} />
         <div className="form-comments-container">
           <div className="form-section">
           <div className="form-field">
@@ -125,10 +130,11 @@ const DealPage: React.FC = () => {
               onChange={handleChange}
             >
               <option value="">Выберите статус</option>
-              <option value="active">Активный</option>
-              <option value="inactive">Неактивный</option>
-              <option value="pending">В ожидании</option>
-              <option value="completed">Завершен</option>
+              <option value="new">Новый</option>
+              <option value="in_progress">В работе</option>
+              <option value="almost_done">Почти завершен</option>
+              <option value="successful">Успешно</option>
+              <option value="failed">Провал</option>
             </select>
           </div>
             <div className="form-field">
@@ -176,9 +182,9 @@ const DealPage: React.FC = () => {
               placeholder="Введите комментарий"
             ></textarea>
             <div className="comments-list">
-            {comments.map((c, index) => (
+            {deal.comments.map((c, index) => (
               <div key={index} className="comment-item">
-                {c}
+                {c.text}
               </div>
             ))}
           </div>

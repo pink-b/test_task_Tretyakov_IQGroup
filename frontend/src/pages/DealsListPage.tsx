@@ -15,7 +15,7 @@ const DealsListPage: React.FC = () => {
     navigate(`/deal/${id}`);
   };
 
-  const filteredDeals = deals.filter(deal => deal.status === 'Успешно' || deal.status === 'Провал');
+  const filteredDeals = deals.filter(deal => deal.status === 'successful' || deal.status === 'failed');
 
   const handleClickOpen = () => {
     setOpen(true);

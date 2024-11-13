@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../store/store';
 
-export type Status = 'Новый' | 'В работе' | 'Почти завершен' | 'Успешно' | 'Провал';
+export type Status = 'new' | 'in_progress' | 'almost_done' | 'successful' | 'failed';
 
 export interface IDeal {
   id: number;
@@ -69,13 +69,32 @@ const dealsSlice = createSlice({
         state.deals[index] = action.payload;
       }
     },
-    updatePartialDeal: (state, action: PayloadAction<Partial<IDeal>>) => {
-      if (state.currentDeal) {
-        state.currentDeal = { ...state.currentDeal, ...action.payload };
+    // updatePartialDeal: (state, action: PayloadAction<Partial<IDeal>>) => {
+    //   console.log(state)
+    //   console.log(state.currentDeal)
+    //   console.log(action.payload)
+    //   if (state.deals[action.payload.id]) {
+    //     state.currentDeal = { ...state.currentDeal, ...action.payload };
+    //   }
+    // },
+    updatePartialDeal: (state, action: PayloadAction<Partial<IDeal> & { id: number }>) => {
+      const index = state.deals.findIndex(deal => deal.id === action.payload.id);
+      if (index !== -1) {
+        state.deals[index] = {
+          ...state.deals[index],
+          ...action.payload,     
+        };
       }
     },
+    // deleteDeal: (state, action: PayloadAction<number>) => {
+    //   state.deals = state.deals.filter(deal => deal.id !== action.payload);
+    // },
     deleteDeal: (state, action: PayloadAction<number>) => {
       state.deals = state.deals.filter(deal => deal.id !== action.payload);
+      
+      if (state.currentDeal && state.currentDeal.id === action.payload) {
+        state.currentDeal = undefined;
+      }
     },
 
     addComment: (state, action: PayloadAction<{ dealId: number; comment: IComment }>) => {
