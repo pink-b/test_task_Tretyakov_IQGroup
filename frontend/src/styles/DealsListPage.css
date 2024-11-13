@@ -1,5 +1,6 @@
 .deals-container {
     padding: 20px;
+    width: 1920px;
   }
   
   .create-button {
@@ -17,6 +18,7 @@
   .deals-table {
     width: 100%;
     border-collapse: collapse;
+    width: 1843px;
   }
   
   .table-header {

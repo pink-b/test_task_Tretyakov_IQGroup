@@ -11,7 +11,7 @@ const App: React.FC = () => {
       <Router>
         <Routes>
           <Route path="/" element={<DealsListPage />} />
-          <Route path="/deal/:id" element={<DealPage />} />
+          <Route path="/deal/:dealId" element={<DealPage />} />
         </Routes>
       </Router>
     </Provider>

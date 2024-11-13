@@ -45,8 +45,8 @@ const AlertDialog: React.FC<AlertDialogProps> = ({ open, handleClose, title, mes
     }
 
     const idGenerator = (() => {
-        const lastBookId: number = deals.length > 0 ? deals[deals.length - 1]!.id : -1;
-        return lastBookId + 1;
+        const dealId: number = deals.length > 0 ? deals[deals.length - 1]!.id : -1;
+        return dealId + 1;
     });
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

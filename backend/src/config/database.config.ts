@@ -1,13 +1,12 @@
 // src/config/database.config.ts
 import { Sequelize } from 'sequelize-typescript';
-import { Deal } from '../models/deal.model'; // Импортируйте свою модель
-
+import { Deal } from '../models/deal.model';
 export const sequelize = new Sequelize({
   dialect: 'postgres',
-  host: 'localhost', // или имя вашего контейнера
+  host: 'localhost',
   port: 5432,
-  username: 'your_db_username',
-  password: 'your_db_password',
-  database: 'your_db_name',
-  models: [Deal], // Укажите ваши модели здесь
+  username: 'postgres',
+  password: 'новый_пароль',
+  database: 'test_task_tretyakov_iqgroup',
+  models: [Deal],
 });

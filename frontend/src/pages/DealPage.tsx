@@ -1,39 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import '../styles/DealPage.css';
-
-interface IDeal {
-  status: string;
-  phoneNumber: string;
-  budget: string;
-  fullName: string;
-  createdAt: string;
-  comments: string[];
-}
+import { updateCompleteDeal } from '../redux/features/dealsSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { IDeal } from '../redux/features/dealsSlice';
+import { IComment, Status, Comment, selectDeals } from '../redux/features/dealsSlice';
+import { RootState } from '../redux/store/store';
 
 const DealPage: React.FC = () => {
-  const [deals, setDeals] = useState<IDeal[]>([]); // Состояние для сделок
+  const dispatch = useDispatch();
+  const deals = useSelector((state: RootState) => selectDeals(state));
+  const { dealId } = useParams<{ dealId: string }>();
+
+  // const [deals, setDeals] = useState<IDeal[]>([]);
   const [formData, setFormData] = useState<Omit<IDeal, 'comments'>>({
-    status: '',
+    id: 0,
+    title: '',
+    status: 'Новый',
     phoneNumber: '',
-    budget: '',
+    budget: 0,
     fullName: '',
-    createdAt: '',
+    createdAt: new Date().toISOString(),
   });
+
+  const idGenerator = (() => {
+    console.log(deals)
+    console.log(dealId)
+    const comments = deals[Number(dealId)].comments
+    const commentId: number = comments.length > 0 ? comments[comments.length - 1]!.id : -1;
+    return commentId + 1;
+});
+
   const [comment, setComment] = useState<string>('');
   const [comments, setComments] = useState<string[]>([]);
+  const [isFormDirty, setIsFormDirty] = useState<boolean>(false);
+  useEffect(() => {
+    const hasChanges = Object.values(formData).some(value => value !== '') || comments.length > 0 || comment !== '';
+    setIsFormDirty(hasChanges);
+  }, [formData, comments, comment]);
 
-  const handleSave = () => {
-    const newDeal: IDeal = {
-      ...formData,
-      comments,
-    };
-    setDeals([...deals, newDeal]);
+  const handleAddComment = () => {
     if (comment) {
       setComments([...comments, comment]);
       setComment('');
     }
-    clearFields();
   };
+
+  
 
   const handleCancel = () => {
     clearFields();
@@ -41,22 +54,49 @@ const DealPage: React.FC = () => {
 
   const clearFields = () => {
     setFormData({
-      status: '',
+      id: 0,
+      title: '',
+      status: 'Новый',
       phoneNumber: '',
-      budget: '',
+      budget: 0,
       fullName: '',
-      createdAt: '',
+      createdAt: new Date().toISOString(),
     });
     setComments([]);
     setComment('');
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement| HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    if (name === "status") {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value as Status,
+      }));
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
+  };
+
+  const handleSave = () => {
+    const newComment: IComment = {
+      id: idGenerator(),
+      dealId: Number(dealId),
+      text: comment,
+      createdAt: new Date().toISOString()
+  };
+  console.log(formData)
+  console.log(newComment)
+    const newDeal = {
+      ...formData,
+      comments: [...deals[Number(dealId)].comments, newComment]
+    }
+    console.log(newDeal)
+    dispatch(updateCompleteDeal(newDeal))
+    clearFields();
   };
 
   return (
@@ -77,15 +117,20 @@ const DealPage: React.FC = () => {
 
         <div className="form-comments-container">
           <div className="form-section">
-            <div className="form-field">
-              <label>Статус</label>
-              <input
-                type="text"
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-              />
-            </div>
+          <div className="form-field">
+            <label>Статус</label>
+            <select
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+            >
+              <option value="">Выберите статус</option>
+              <option value="active">Активный</option>
+              <option value="inactive">Неактивный</option>
+              <option value="pending">В ожидании</option>
+              <option value="completed">Завершен</option>
+            </select>
+          </div>
             <div className="form-field">
               <label>Номер телефона</label>
               <input
@@ -139,10 +184,12 @@ const DealPage: React.FC = () => {
           </div>
           </div>
         </div>
-        <div className="action-buttons">
-            <button onClick={handleSave}>Сохранить</button>
-            <button onClick={handleCancel}>Отменить</button>
-          </div>
+        {isFormDirty && (
+  <div className="action-buttons">
+    <button onClick={handleSave}>Сохранить</button>
+    <button onClick={handleCancel}>Отменить</button>
+  </div>
+)}
       </div>
     </div>
   );

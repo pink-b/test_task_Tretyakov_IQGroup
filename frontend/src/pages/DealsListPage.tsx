@@ -49,8 +49,6 @@ const DealsListPage: React.FC = () => {
             <th className="table-header">Название</th>
             <th className="table-header">Статус</th>
             <th className="table-header">Дата создания</th>
-            <th className="table-header"></th>
-            <th className="table-header"></th>
           </tr>
         </thead>
         <tbody>
@@ -60,8 +58,6 @@ const DealsListPage: React.FC = () => {
               <td className="table-cell">{deal.title}</td>
               <td className="table-cell">{deal.status}</td>
               <td className="table-cell">{deal.createdAt}</td>
-              <td className="table-cell"><button>Редактировать</button></td>
-              <td className="table-cell"><button>Удалить</button></td>
             </tr>
           ))}
         </tbody>
