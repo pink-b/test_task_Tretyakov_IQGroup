@@ -4,15 +4,29 @@ import '../styles/DealPage.css';
 import { updateCompleteDeal, updatePartialDeal, deleteDeal } from '../redux/features/dealsSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { IDeal } from '../redux/features/dealsSlice';
-import { IComment, Status, Comment, selectDeals } from '../redux/features/dealsSlice';
+import { IComment, Status, selectDeals } from '../redux/features/dealsSlice';
 import { RootState } from '../redux/store/store';
 import { StatusBar } from '../components/StatusBar';
+import { selectLoading, selectError } from '../redux/features/dealsSlice';
+import { fetchAllDeals, fetchDealsById } from '../redux/asyncActions/dealsAsyncActions'; // Импортируйте fetchDealsById
+import { AppDispatch } from '../redux/store/store';
 
 const DealPage: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const deals = useSelector(selectDeals);
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
   const navigate = useNavigate();
-  const deals = useSelector((state: RootState) => selectDeals(state));
   const { dealId } = useParams<{ dealId: string }>();
+
+  // Загружаем сделку при монтировании компонента
+  useEffect(() => {
+    if (dealId) {
+      dispatch(fetchDealsById(Number(dealId))); // Передаем dealId как число
+    }
+  }, [dispatch, dealId]);
+
+  // Найдите сделку в списке
   const deal = deals.find(deal => deal.id === Number(dealId));
 
   if (!deal) {
@@ -23,7 +37,8 @@ const DealPage: React.FC = () => {
       </div>
     );
   }
-  const comments = (deal.comments || [])
+
+  const comments = (deal.comments || []);
 
   const [formData, setFormData] = useState<Omit<IDeal, 'comments'>>({
     id: deal.id,
@@ -37,6 +52,7 @@ const DealPage: React.FC = () => {
 
   const [comment, setComment] = useState<string>('');
   const [isFormDirty, setIsFormDirty] = useState<boolean>(false);
+
   useEffect(() => {
     const hasChanges = Object.values(formData).some(value => value !== '') || comments.length > 0 || comment !== '';
     setIsFormDirty(hasChanges);
@@ -59,7 +75,7 @@ const DealPage: React.FC = () => {
     setComment('');
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement| HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     if (name === "status") {
       setFormData((prevData) => ({
