@@ -23,6 +23,7 @@ const DealPage: React.FC = () => {
       </div>
     );
   }
+  const comments = (deal.comments || [])
 
   const [formData, setFormData] = useState<Omit<IDeal, 'comments'>>({
     id: deal.id,
@@ -35,12 +36,11 @@ const DealPage: React.FC = () => {
   });
 
   const [comment, setComment] = useState<string>('');
-  const [comments, setComments] = useState<string[]>([]);
   const [isFormDirty, setIsFormDirty] = useState<boolean>(false);
   useEffect(() => {
     const hasChanges = Object.values(formData).some(value => value !== '') || comments.length > 0 || comment !== '';
     setIsFormDirty(hasChanges);
-  }, [formData, comments, comment]);
+  }, [formData, comment]);
 
   const handleCancel = () => {
     clearFields();
@@ -56,7 +56,6 @@ const DealPage: React.FC = () => {
       fullName: '',
       createdAt: new Date().toISOString(),
     });
-    setComments([]);
     setComment('');
   };
 
@@ -91,12 +90,12 @@ const DealPage: React.FC = () => {
   
     if (comment) {
       const newComment: IComment = {
-        id: deal.comments.length > 0 ? deal.comments[deal.comments.length - 1].id + 1 : 0,
+        id: comments.length > 0 ? comments[comments.length - 1].id + 1 : 0,
         dealId: Number(dealId),
         text: comment,
         createdAt: new Date().toISOString(),
       };
-      updatedDeal.comments = [...deal.comments, newComment];
+      updatedDeal.comments = [...comments, newComment];
     }
   
     dispatch(updatePartialDeal({ id: Number(dealId), ...updatedDeal }));
@@ -182,7 +181,7 @@ const DealPage: React.FC = () => {
               placeholder="Введите комментарий"
             ></textarea>
             <div className="comments-list">
-            {deal.comments.map((c, index) => (
+            {comments.map((c, index) => (
               <div key={index} className="comment-item">
                 {c.text}
               </div>
