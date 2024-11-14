@@ -1,21 +1,16 @@
-import { Table, Column, Model, ForeignKey, DataType } from 'sequelize-typescript';
+// src/models/comment.model.ts
+import { Column, Model, Table, ForeignKey } from 'sequelize-typescript';
 import { Deal } from './deal.model';
 
 @Table
 export class Comment extends Model<Comment> {
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  content: string;
+  @Column
+  text: string;
+
+  @Column
+  createdAt: Date;
 
   @ForeignKey(() => Deal)
   @Column
-  dealId: number;
-
-  @Column({
-    type: DataType.DATE,
-    defaultValue: DataType.NOW,
-  })
-  createdAt: Date;
+  dealId: number; 
 }

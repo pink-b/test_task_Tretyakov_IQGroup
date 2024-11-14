@@ -1,17 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { Comment } from '../models/comment.model';
+import { InjectModel } from '@nestjs/sequelize';
+import { Comment } from 'src/models/comment.model';
 
 @Injectable()
-export class CommentsService {
-  async findAll(dealId: string): Promise<Comment[]> {
-    return Comment.findAll({ where: { dealId } });
+export class CommentService {
+  constructor(
+    @InjectModel(Comment)
+    private commentModel: typeof Comment,
+  ) {}
+
+  async getCommentsByDealId(dealId: number) {
+    return await this.commentModel.findAll({ where: { dealId } });
   }
 
-  async create(comment: Comment): Promise<Comment> {
-    return Comment.create(comment);
+  async createComment(commentData: Partial<Comment>) {
+    return await this.commentModel.create(commentData);
   }
 
-  async remove(id: string): Promise<void> {
-    await Comment.destroy({ where: { id } });
+  async deleteComment(id: number) {
+    await this.commentModel.destroy({ where: { id } });
+    return { message: 'Comment deleted successfully' };
   }
 }

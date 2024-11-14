@@ -1,27 +1,34 @@
-// src/deals/deals.service.ts
 import { Injectable } from '@nestjs/common';
-import { Deal } from '../models/deal.model';
+import { InjectModel } from '@nestjs/sequelize';
+import { Deal } from 'src/models/deal.model';
+import { Comment } from 'src/models/comment.model';
 
 @Injectable()
-export class DealsService {
-  async findAll(): Promise<Deal[]> {
-    return Deal.findAll();
+export class DealService {
+  constructor(
+    @InjectModel(Deal)
+    private dealModel: typeof Deal,
+  ) {}
+
+  async getAllDeals(): Promise<Deal[]> {
+    return await this.dealModel.findAll({ include: [Comment] }); // Включаем комментарии
   }
 
-  async findOne(id: string): Promise<Deal> {
-    return Deal.findByPk(id);
+  async getDealById(id: number): Promise<Deal> {
+    return await this.dealModel.findByPk(id, { include: [Comment] }); // Включаем комментарии
   }
 
-  async create(deal: Deal): Promise<Deal> {
-    return Deal.create(deal);
+  async createDeal(dealData: Partial<Deal>) {
+    return await this.dealModel.create(dealData);
   }
 
-  async update(id: string, deal: Deal): Promise<Deal> {
-    await Deal.update(deal, { where: { id } });
-    return this.findOne(id);
+  async updateDeal(id: number, dealData: Partial<Deal>) {
+    await this.dealModel.update(dealData, { where: { id } });
+    return this.getDealById(id);
   }
 
-  async remove(id: string): Promise<void> {
-    await Deal.destroy({ where: { id } });
+  async deleteDeal(id: number) {
+    await this.dealModel.destroy({ where: { id } });
+    return { message: 'Deal deleted successfully' };
   }
 }

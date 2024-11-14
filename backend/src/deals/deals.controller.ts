@@ -1,35 +1,33 @@
-// src/deals/deals.controller.ts
 import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
-import { DealsService } from './deals.service';
-import { Deal } from '../models/deal.model';
+import { DealService } from './deals.service';
+import { Deal } from 'src/models/deal.model';
 
 @Controller('deals')
-export class DealsController {
-  constructor(private readonly dealsService: DealsService) {}
+export class DealController {
+  constructor(private readonly dealService: DealService) {}
 
   @Get()
-  async findAll(): Promise<Deal[]> {
-    return this.dealsService.findAll();
+  async getAllDeals() {
+    return await this.dealService.getAllDeals();
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Deal> {
-    return this.dealsService.findOne(id);
+  async getDealById(@Param('id') id: number) {
+    return await this.dealService.getDealById(id);
   }
 
   @Post()
-  async create(@Body() deal: Deal): Promise<Deal> {
-    return this.dealsService.create(deal);
+  async createDeal(@Body() dealData: Partial<Deal>) {
+    return await this.dealService.createDeal(dealData);
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() deal: Deal): Promise<Deal> {
-    return this.dealsService.update(id, deal);
+  async updateDeal(@Param('id') id: number, @Body() dealData: Partial<Deal>) {
+    return await this.dealService.updateDeal(id, dealData);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<void> {
-    return this.dealsService.remove(id);
+  async deleteDeal(@Param('id') id: number) {
+    return await this.dealService.deleteDeal(id);
   }
 }
-

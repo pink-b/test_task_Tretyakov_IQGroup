@@ -1,23 +1,23 @@
 import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
-import { CommentsService } from './comments.service';
-import { Comment } from '../models/comment.model';
+import { CommentService } from './comments.service';
+import { Comment } from 'src/models/comment.model';
 
 @Controller('comments')
-export class CommentsController {
-  constructor(private readonly commentsService: CommentsService) {}
+export class CommentController {
+  constructor(private readonly commentService: CommentService) {}
 
   @Get(':dealId')
-  async findAll(@Param('dealId') dealId: string): Promise<Comment[]> {
-    return this.commentsService.findAll(dealId);
+  async getCommentsByDealId(@Param('dealId') dealId: number) {
+    return await this.commentService.getCommentsByDealId(dealId);
   }
 
   @Post()
-  async create(@Body() comment: Comment): Promise<Comment> {
-    return this.commentsService.create(comment);
+  async createComment(@Body() commentData: Partial<Comment>) {
+    return await this.commentService.createComment(commentData);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<void> {
-    return this.commentsService.remove(id);
+  async deleteComment(@Param('id') id: number) {
+    return await this.commentService.deleteComment(id);
   }
 }

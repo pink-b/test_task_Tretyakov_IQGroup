@@ -1,63 +1,29 @@
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import { Column, Model, Table, HasMany } from 'sequelize-typescript';
+import { Comment } from './comment.model';
 
-export interface Comment {
-  id: number;
-  text: string;
-  created_at: Date;
-  author: string;
-}
-
-@Table({ tableName: 'deals', timestamps: false })
-export class Deal extends Model<Deal> {
-  @Column({
-    type: DataType.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
-  })
+@Table
+export class Deal extends Model {
+  @Column({ primaryKey: true, autoIncrement: true })
   id: number;
 
-  @Column({
-    type: DataType.STRING(255),
-    allowNull: false,
-  })
+  @Column
   title: string;
 
-  @Column({
-    type: DataType.STRING(20),
-    allowNull: false,
-    validate: {
-      isIn: [['new', 'in_progress', 'almost_done', 'successful', 'failed']],
-    },
-  })
+  @Column
   status: string;
 
-  @Column({
-    type: DataType.DATE,
-    defaultValue: DataType.NOW,
-  })
-  created_at: Date;
+  @Column
+  createdAt: Date;
 
-  @Column({
-    type: DataType.STRING(15),
-    allowNull: true,
-  })
-  phone_number: string;
+  @Column
+  phoneNumber?: string;
 
-  @Column({
-    type: DataType.DECIMAL(10, 2),
-    allowNull: true,
-  })
-  budget: number;
+  @Column
+  budget?: number;
 
-  @Column({
-    type: DataType.STRING(255),
-    allowNull: true,
-  })
-  full_name: string;
+  @Column
+  fullName?: string;
 
-  @Column({
-    type: DataType.JSONB,
-    defaultValue: [],
-  })
+  @HasMany(() => Comment)
   comments: Comment[];
 }
