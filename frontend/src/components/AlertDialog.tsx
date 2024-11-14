@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store/store';
-import { addDeal, Deal } from '../redux/features/dealsSlice';
+import { addDeal, Deal,  } from '../redux/features/dealsSlice';
 import '../styles/AlertDialog.css';
+import { createNewDeal } from '../redux/asyncActions/dealsAsyncActions';
+import { AppDispatch } from '../redux/store/store';
 
 interface AlertDialogProps {
     open: boolean;
@@ -12,10 +14,12 @@ interface AlertDialogProps {
 }
 
 const AlertDialog: React.FC<AlertDialogProps> = ({ open, handleClose, title, message }) => {
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const [inputValue, setInputValue] = useState<string>('');
     const [error, setError] = useState<string>('');
     const deals = useSelector((state: RootState) => state.deals.deals);
+    const loading = useSelector((state: RootState) => state.deals.loading);
+    const serverError = useSelector((state: RootState) => state.deals.error);
 
     // Закрытие диалога при нажатии клавиши "Escape"
     useEffect(() => {
@@ -40,16 +44,16 @@ const AlertDialog: React.FC<AlertDialogProps> = ({ open, handleClose, title, mes
     };
 
     const handleCloseDialog = () => {
-        setInputValue('')
-        handleClose()
-    }
+        setInputValue('');
+        handleClose();
+    };
 
     const idGenerator = (() => {
         const dealId: number = deals.length > 0 ? deals[deals.length - 1]!.id : -1;
         return dealId + 1;
     });
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         // Валидация
@@ -59,19 +63,22 @@ const AlertDialog: React.FC<AlertDialogProps> = ({ open, handleClose, title, mes
         }
 
         // Создание нового объекта Deal
-        const newDeal = new Deal(
-            
-                idGenerator(),
-                inputValue,
-                'new',
-                new Date().toISOString(),
-            
-        );
+        const newDeal: Deal = {
+            id: idGenerator(),
+            title: inputValue,
+            status: 'new',
+            createdAt: new Date().toISOString(),
+        };
 
-        // Добавление новой сделки
-        dispatch(addDeal(newDeal));
+        await dispatch(createNewDeal(newDeal));
+
+        if (serverError) {
+            setError(serverError);
+            return;
+        }
+
         handleClose();
-        setInputValue('')
+        setInputValue('');
     };
 
     return (
@@ -85,11 +92,13 @@ const AlertDialog: React.FC<AlertDialogProps> = ({ open, handleClose, title, mes
                         value={inputValue}
                         onChange={handleChange}
                         placeholder="Введите значение"
+                        disabled={loading}
                     />
                     {error && <div className="error">{error}</div>}
-                    <button type="submit">Сохранить</button>
+                    <button type="submit" disabled={loading}>Сохранить</button>
                 </form>
-                <button onClick={handleCloseDialog}>Закрыть</button>
+                <button onClick={handleCloseDialog} disabled={loading}>Закрыть</button>
+                {loading && <div className="loading">Сохранение...</div>}
             </div>
         </div>
     );

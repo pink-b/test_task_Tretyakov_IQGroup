@@ -26,7 +26,7 @@ export class Deal extends Model<Deal> {
     type: DataType.STRING(20),
     allowNull: false,
     validate: {
-      isIn: [['Новый', 'В работе', 'Почти завершен', 'Успешно', 'Провал']],
+      isIn: [['new', 'in_progress', 'almost_done', 'successful', 'failed']],
     },
   })
   status: string;

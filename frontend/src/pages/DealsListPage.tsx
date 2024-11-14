@@ -1,15 +1,29 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store/store';
 import { useNavigate } from 'react-router-dom';
 import '../styles/DealsListPage.css';
 import AlertDialog from '../components/AlertDialog';
+import { selectDeals, selectLoading, selectError } from '../redux/features/dealsSlice'
+import { fetchAllDeals } from '../redux/asyncActions/dealsAsyncActions';
+import { AppDispatch } from '../redux/store/store';
 
 const DealsListPage: React.FC = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
   const [filter, setFilter] = useState<'all' | 'archive'>('all'); // Состояние для фильтрации
-  const deals = useSelector((state: RootState) => state.deals.deals);
+  // const deals = useSelector((state: RootState) => state.deals.deals);
+  const dispatch = useDispatch<AppDispatch>();
+  const deals = useSelector(selectDeals);
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
+
+  useEffect(() => {
+    dispatch(fetchAllDeals());
+  }, [dispatch]);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   const handleRowClick = (id: number) => {
     navigate(`/deal/${id}`);
