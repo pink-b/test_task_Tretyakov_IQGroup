@@ -3,11 +3,11 @@ import { DealController } from './deals/deals.controller';
 import { DealService } from './deals/deals.service';
 import { CommentController } from './comments/comments.controller';
 import { CommentService } from './comments/comments.service';
-import { Comment } from './models/comment.model';
-
+import { CleanupService } from './cleanUp/cleanUp.service';
+import { CleanupController } from './cleanUp/cleanUp.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
-
 import { Deal } from './models/deal.model';
+import { Comment } from './models/comment.model';
 
 @Module({
   imports: [
@@ -19,11 +19,11 @@ import { Deal } from './models/deal.model';
       password: 'новый_пароль',
       database: 'test_task_tretyakov_iqgroup',
       models: [Deal, Comment],
-      autoLoadModels: true
+      autoLoadModels: true,
     }),
     SequelizeModule.forFeature([Deal, Comment]),
   ],
-  controllers: [DealController, CommentController],
-  providers: [DealService, CommentService],
+  controllers: [DealController, CommentController, CleanupController],
+  providers: [DealService, CommentService, CleanupService],
 })
 export class AppModule {}

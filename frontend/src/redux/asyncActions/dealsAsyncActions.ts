@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { getAllDeals, createDeal, updateDeal, deleteDeal, getDealById } from '../../api/requests';
-import { IDeal } from '../features/dealsSlice'; // Импортируйте интерфейсы
+import { getAllDeals, createDeal, updateDeal, removeDeal, getDealById } from '../../api/requests';
+import { IDeal } from '../features/dealsSlice';
 
 export const fetchAllDeals = createAsyncThunk('deals/fetchAll', async () => {
   const response = await getAllDeals();
@@ -22,8 +22,8 @@ export const updateExistingDeal = createAsyncThunk('deals/update', async (dealDa
   return response;
 });
 
-export const removeDeal = createAsyncThunk('deals/delete', async (id: number) => {
-  await deleteDeal(id);
+export const deleteDealAsyncAction = createAsyncThunk('deals/delete', async (id: number) => {
+  await removeDeal(id);
   return id;
 });
 

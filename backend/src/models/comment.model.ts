@@ -1,4 +1,3 @@
-// src/models/comment.model.ts
 import { Column, Model, Table, ForeignKey } from 'sequelize-typescript';
 import { Deal } from './deal.model';
 

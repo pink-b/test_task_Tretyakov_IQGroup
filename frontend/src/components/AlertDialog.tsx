@@ -53,8 +53,7 @@ const AlertDialog: React.FC<AlertDialogProps> = ({ open, handleClose, title, mes
         return dealId + 1;
     });
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const handleClick = async () => {
 
         // Валидация
         if (inputValue.trim().length < 2) {
@@ -68,6 +67,7 @@ const AlertDialog: React.FC<AlertDialogProps> = ({ open, handleClose, title, mes
             title: inputValue,
             status: 'new',
             createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
         };
 
         await dispatch(createNewDeal(newDeal));
@@ -84,20 +84,21 @@ const AlertDialog: React.FC<AlertDialogProps> = ({ open, handleClose, title, mes
     return (
         <div className="alert-dialog-overlay" role="dialog" aria-modal="true" aria-labelledby="dialog-title" aria-describedby="dialog-message">
             <div className="alert-dialog">
-                <h2 id="dialog-title">{title}</h2>
-                <p id="dialog-message">{message}</p>
-                <form onSubmit={handleSubmit}>
+                <h2 id="dialog-title" className="dialog-title">{title}</h2>
+                <p id="dialog-message" className="dialog-message">{message}</p>
+                <form>
                     <input
+                    className="alert-dialog-input"
                         type="text"
                         value={inputValue}
                         onChange={handleChange}
-                        placeholder="Введите значение"
+                        placeholder="Введите название"
                         disabled={loading}
                     />
                     {error && <div className="error">{error}</div>}
-                    <button type="submit" disabled={loading}>Сохранить</button>
                 </form>
-                <button onClick={handleCloseDialog} disabled={loading}>Закрыть</button>
+                <button type="submit" disabled={loading} className="alert-dialog-save-button" onClick={handleClick}>Создать</button>
+                <button onClick={handleCloseDialog} disabled={loading} className="alert-dialog-cancel-button">Отмена</button>
                 {loading && <div className="loading">Сохранение...</div>}
             </div>
         </div>

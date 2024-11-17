@@ -1,11 +1,23 @@
 .container {
-    padding: 20px;
+    /* padding: 20px; */
+    background-color: rgb(217, 217, 217);
+    display: flex;
+    align-items: space-between;
+    align-items: center;
+    margin-bottom: 10px;
   }
   
   .border-box {
+    width: 100%;
     border: 1px solid #D9D9D9;
-    padding: 20px;
+    margin: 34px 38px 37px 36px;
+    padding: 32px 40px 31px 40px;
     border-radius: 5px;
+    background-color: white;
+  }
+  
+  .form-comments-container {
+    margin-bottom: 26px;
   }
   
   .header {
@@ -28,10 +40,6 @@
   .progress-fill {
     height: 10px;
     background-color: #4caf50;
-  }
-  
-  .form-section {
-    margin-bottom: 20px;
   }
   
   .form-field {

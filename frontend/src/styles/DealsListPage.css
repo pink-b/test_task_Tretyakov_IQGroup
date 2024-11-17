@@ -1,32 +1,82 @@
-.deals-container {
-    padding: 20px;
-    width: 1920px;
-  }
-  
-  .create-button {
-    margin-bottom: 20px;
-  }
-  
-  .filter-buttons {
-    margin-bottom: 20px;
-  }
-  
-  .filter-button {
-    margin-right: 10px;
-  }
-  
-  .deals-table {
-    width: 100%;
-    border-collapse: collapse;
-    width: 1843px;
-  }
-  
-  .table-header {
-    border: 1px solid #ccc;
-    padding: 8px;
-  }
-  
-  .table-cell {
-    border: 1px solid #ccc;
-    padding: 8px;
-  }
+table {
+  border-collapse: collapse;
+  width: 100%;
+  background: rgb(235, 235, 235);
+  margin-bottom: 30px;
+}
+
+.table-header-id {
+  width: 148px;
+}
+
+.table-header-date {
+  width: 393px;
+}
+
+.table-header-status {
+  width: 647px;
+}
+
+th, td {
+  text-align: center;
+  padding: 8px;
+  background: rgb(235, 235, 235);
+}
+
+
+.container {
+  display: flex;
+  gap: 20px;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  background: rgb(255, 255, 255);
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s, box-shadow 0.3s;
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 44px;
+  letter-spacing: 0%;
+  text-align: center;
+}
+
+button:hover {
+  background: rgb(241, 239, 239);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.create-button {
+  width: 368px;
+  margin-bottom: 43px;
+}
+
+.filter-button-archive {
+  width: 300px;
+}
+
+.filter-button-save:hover {
+  background: rgb(61, 61, 61);
+  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+}
+
+.filter-button-save {
+  background: rgb(0, 0, 0);
+  color: rgb(242, 242, 242);
+  width: 300px;
+  margin-bottom: 43px;
+}
+
+.main-content {
+  background: rgb(217, 217, 217);
+  padding-left: 37px;
+  padding-right: 42px;
+  padding-top: 64px;
+  padding-bottom: 28px;
+}

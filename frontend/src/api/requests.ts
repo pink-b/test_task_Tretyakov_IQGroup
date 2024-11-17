@@ -41,7 +41,7 @@ export const getArchivedDeals = async () => {
     }
   };
 
-  export const updateDeal = async (id: number, dealData: any) => {
+  export const updateDeal = async (id: number, dealData: IDeal) => {
     try {
       const response = await axiosInstance.patch(`/deals/${id}`, dealData);
       return response.data;
@@ -51,7 +51,7 @@ export const getArchivedDeals = async () => {
     }
   };
 
-  export const deleteDeal = async (id: number) => {
+  export const removeDeal = async (id: number) => {
     try {
       await axiosInstance.delete(`/deals/${id}`);
     } catch (error) {

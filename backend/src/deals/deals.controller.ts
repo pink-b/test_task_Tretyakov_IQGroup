@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Patch } from '@nestjs/common';
 import { DealService } from './deals.service';
 import { Deal } from 'src/models/deal.model';
 
@@ -21,7 +21,7 @@ export class DealController {
     return await this.dealService.createDeal(dealData);
   }
 
-  @Put(':id')
+  @Patch(':id')
   async updateDeal(@Param('id') id: number, @Body() dealData: Partial<Deal>) {
     return await this.dealService.updateDeal(id, dealData);
   }

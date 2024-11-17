@@ -17,3 +17,34 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
+
+.alert-dialog-input {
+    width: 571px;
+    margin-bottom: 28px;
+}
+
+.dialog-title {
+    width: 288px;
+    margin-left: 0;
+    margin-bottom: 45.14px;
+}
+
+.dialog-message {
+font-size: 24px;
+line-height: 29px;
+text-align: left;
+margin-bottom: 21px;
+}
+
+.alert-dialog-save-button {
+    background: rgb(0, 0, 0);
+    color: rgb(242, 242, 242);
+    width: 290px;
+    margin-bottom: 18px;
+}
+
+.alert-dialog-cancel-button {
+    background: rgb(217, 217, 217);
+    width: 290px;
+    margin-bottom: 18px;
+}

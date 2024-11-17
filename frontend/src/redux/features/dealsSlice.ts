@@ -4,7 +4,7 @@ import {
   fetchAllDeals,
   createNewDeal,
   updateExistingDeal,
-  removeDeal
+  deleteDealAsyncAction
 } from '../asyncActions/dealsAsyncActions';
 
 export type Status = 'new' | 'in_progress' | 'almost_done' | 'successful' | 'failed';
@@ -13,7 +13,8 @@ export interface IDeal {
   id: number;
   title: string;
   status: Status;
-  createdAt: string; // Можно использовать Date, но в рамках тз не увидел, что есть смысл. А со строками легче
+  createdAt?: string; // Можно использовать Date, но в рамках тз не увидел, что есть смысл. А со строками легче
+  updatedAt: string,
   phoneNumber?: string;
   budget?: number;
   fullName?: string;  
@@ -32,7 +33,8 @@ export class Deal implements IDeal {
     public id: number,
     public title: string,
     public status: Status,
-    public createdAt: string,
+    public updatedAt: string,
+    public createdAt?: string,
     public phoneNumber?: string,
     public budget?: number,
     public fullName?: string, 
@@ -146,7 +148,7 @@ const dealsSlice = createSlice({
           state.deals[index] = action.payload;
         }
       })
-      .addCase(removeDeal.fulfilled, (state, action) => {
+      .addCase(deleteDealAsyncAction.fulfilled, (state, action) => {
         state.deals = state.deals.filter(deal => deal.id !== action.payload);
         
         if (state.currentDeal && state.currentDeal.id === action.payload) {

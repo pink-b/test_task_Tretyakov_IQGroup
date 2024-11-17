@@ -8,4 +8,3 @@ export const fetchDeals = createAsyncThunk<Deal[]>('deals/fetchDeals', async () 
   return response.data;
 });
 
-// Другие асинхронные действия (например, создание, обновление, удаление сделок) можно добавить аналогично

@@ -1,32 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../styles/DealPage.css';
-import { updateCompleteDeal, updatePartialDeal, deleteDeal } from '../redux/features/dealsSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { IDeal } from '../redux/features/dealsSlice';
-import { IComment, Status, selectDeals } from '../redux/features/dealsSlice';
-import { RootState } from '../redux/store/store';
+import { IComment, selectDeals } from '../redux/features/dealsSlice';
 import { StatusBar } from '../components/StatusBar';
-import { selectLoading, selectError } from '../redux/features/dealsSlice';
-import { fetchAllDeals, fetchDealsById } from '../redux/asyncActions/dealsAsyncActions'; // Импортируйте fetchDealsById
+import { deleteDealAsyncAction, fetchDealsById } from '../redux/asyncActions/dealsAsyncActions';
 import { AppDispatch } from '../redux/store/store';
+import { updateExistingDeal } from '../redux/asyncActions/dealsAsyncActions';
 
 const DealPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const deals = useSelector(selectDeals);
-  const loading = useSelector(selectLoading);
-  const error = useSelector(selectError);
   const navigate = useNavigate();
   const { dealId } = useParams<{ dealId: string }>();
 
-  // Загружаем сделку при монтировании компонента
   useEffect(() => {
     if (dealId) {
-      dispatch(fetchDealsById(Number(dealId))); // Передаем dealId как число
+      dispatch(fetchDealsById(Number(dealId)));
     }
   }, [dispatch, dealId]);
 
-  // Найдите сделку в списке
   const deal = deals.find(deal => deal.id === Number(dealId));
 
   if (!deal) {
@@ -47,7 +41,7 @@ const DealPage: React.FC = () => {
     phoneNumber: deal.phoneNumber,
     budget: deal.budget,
     fullName: deal.fullName,
-    createdAt: deal.createdAt,
+    updatedAt: deal.updatedAt,
   });
 
   const [comment, setComment] = useState<string>('');
@@ -70,65 +64,65 @@ const DealPage: React.FC = () => {
       phoneNumber: '',
       budget: 0,
       fullName: '',
-      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     });
     setComment('');
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    if (name === "status") {
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: value as Status,
-      }));
-    } else {
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    }
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  const handleSave = () => {
-    const updatedDeal: Partial<IDeal> = {};
+  const handleSave = async () => {
+  const updatedDeal: Partial<IDeal> = {};
   
-    Object.keys(formData).forEach((key) => {
-      const value = formData[key as keyof typeof formData];
-      const originalValue = deal[key as keyof IDeal];
-  
-      if (value !== originalValue) {
-        if (value !== undefined) {
-          updatedDeal[key as keyof IDeal] = value as any;
-        }
+  Object.keys(formData).forEach((key) => {
+    const value = formData[key as keyof typeof formData];
+    const originalValue = deal[key as keyof IDeal];
+
+    if (value !== originalValue) {
+      if (value !== undefined) {
+        updatedDeal[key as keyof IDeal] = value as any;
       }
-    });
-  
-    if (comment) {
-      const newComment: IComment = {
-        id: comments.length > 0 ? comments[comments.length - 1].id + 1 : 0,
-        dealId: Number(dealId),
-        text: comment,
-        createdAt: new Date().toISOString(),
-      };
-      updatedDeal.comments = [...comments, newComment];
     }
-  
-    dispatch(updatePartialDeal({ id: Number(dealId), ...updatedDeal }));
+  });
+
+  if (comment) {
+    const newComment: IComment = {
+      id: comments.length > 0 ? comments[comments.length - 1].id + 1 : 0,
+      dealId: Number(dealId),
+      text: comment,
+      createdAt: new Date().toISOString(),
+    };
+    updatedDeal.comments = [...comments, newComment];
+  }
+
+  try {
+    await dispatch(updateExistingDeal({ ...deal, ...updatedDeal }));
     setComment('');
     setIsFormDirty(false);
-  };
+  } catch (error) {
+    console.error('Ошибка при обновлении сделки:', error);
+  }
+};
 
-  const handleDelete = () => {
-    if (window.confirm('Вы уверены, что хотите удалить эту сделку?')) {
-      dispatch(deleteDeal(Number(dealId)));
+const handleDelete = async () => {
+  if (window.confirm('Вы уверены, что хотите удалить эту сделку?')) {
+    try {
+      await dispatch(deleteDealAsyncAction(Number(dealId)));
       navigate(`/`);
+    } catch (error) {
+      console.error('Ошибка при удалении сделки:', error);
     }
-  };
+  }
+};
 
   return (
     <div className="container">
-      <h1>Заголовок</h1>
       <div className="border-box">
         <div className="header">
           <h2>Тест (Название)</h2>

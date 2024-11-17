@@ -24,6 +24,6 @@ export class Deal extends Model {
   @Column
   fullName?: string;
 
-  @HasMany(() => Comment)
+  @HasMany(() => Comment, { onDelete: 'CASCADE' })
   comments: Comment[];
 }
