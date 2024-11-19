@@ -17,13 +17,52 @@
   }
   
   .form-comments-container {
+    display: grid;
+    grid-template-columns: 33% 66%;
+    gap: 63px;
     margin-bottom: 26px;
   }
+
+  .delete-button {
+    background: transparent; /* Прозрачный фон */
+    border: none; /* Убираем границу */
+    cursor: pointer; /* Указываем, что это кнопка */
+    text-align: center; /* Центрируем текст */
+    outline: none; /* Убираем обводку при фокусе */
+}
+
+  label {
+    margin-bottom: 0.5rem;
+  }
+
+  .form-field-title-container {
+    display: flex;
+  align-items: center;
+  justify-content: space-between;
+  }
+
+  .input-background {
+    background-color: rgb(237, 237, 237);
+    border: none;
+    width: 100%;
+    padding-bottom: 10px;
+    padding-top: 9px;
+    padding-left: 17px;
+  }
   
-  .header {
+  .edit-button {
+    padding: 0; /* Убираем внутренние отступы */
+    border: none; /* Убираем границу (по желанию) */
+    background: none; /* Убираем фоновый цвет (по желанию) */
+    cursor: pointer; /* Указатель при наведении */
+    font: inherit; /* Унаследуем шрифт от родителя */
+  }
+  
+  .deal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border: none;
   }
   
   .status-section {
@@ -43,40 +82,68 @@
   }
   
   .form-field {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 25px;
   }
   
   .comment-section {
     margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: 1fr; /* Один столбец */
+    gap: 10px; /* Промежутки между элементами */
+    width: 1131px; /* Максимальная ширина контейнера */
+    margin: 0 auto; /* Центрирование контейнера */
+    padding: 20px; /* Внутренние отступы */
+  }
+
+  .comment-list-section {
+  
+    background: rgb(217, 217, 217);
+    height: 432px;
   }
   
   .comments-list {
-    border: 1px solid #D9D9D9;
-    padding: 10px;
+    height: 432px;
+    overflow-y: auto; /* Добавляет вертикальную полосу прокрутки */
+    border-bottom: 26px solid #D9D9D9;
+    border-right: 25px solid #D9D9D9;
+    border-left: 37px solid #D9D9D9;
+    border-top: 13px solid #D9D9D9;
     border-radius: 5px;
   }
   
   .comment-item {
-    padding: 5px;
-    border-bottom: 1px solid #D9D9D9;
-  }
-  
-  .comment-item:last-child {
-    border-bottom: none;
-  }
-  
-  .delete-button {
-    background-color: red;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
+    padding-left: 24px;
+    padding-top: 18px;
+    padding-bottom: 19px;
+    margin-bottom: 6px;
+    background-color: rgb(244, 244, 244);
   }
 
-  .form-comments-container {
-    display: flex;
+  .comments-input-section {
+    padding-bottom: 26px;
+    padding-right: 25px;
+    padding-left: 37px;
+    padding-top: 13px;
+    background: rgb(217, 217, 217);
+    height: 142px;
   }
+
+  .comments-header {
+    text-align: center;
+    margin-bottom: 13px;
+  }
+
+  .comments-input {
+    width: 100%; /* Ширина текстового поля */
+    height: 55px; /* Высота текстового поля */
+    padding-left: 24px;
+    border: none;
+    font-size: 24px;
+    resize: none; /* Отключаем возможность изменения размера */
+  }
+
+  .comments-input::placeholder {
+    color: rgb(0, 0, 0);
+    box-sizing: border-box; /* Учитываем отступы и границы в ширине */
+    text-align: left;
+}

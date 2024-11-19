@@ -18,6 +18,7 @@ table {
 }
 
 th, td {
+  font-size: 36px;
   text-align: center;
   padding: 8px;
   background: rgb(235, 235, 235);

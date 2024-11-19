@@ -13,7 +13,7 @@ import { Comment } from './models/comment.model';
   imports: [
     SequelizeModule.forRoot({
       dialect: 'postgres',
-      host: 'localhost',
+      host: 'postgres',
       port: 5432,
       username: 'postgres',
       password: 'новый_пароль',

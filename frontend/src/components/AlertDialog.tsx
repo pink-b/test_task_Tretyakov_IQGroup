@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store/store';
-import { addDeal, Deal,  } from '../redux/features/dealsSlice';
+import { Deal } from '../redux/features/dealsSlice';
 import '../styles/AlertDialog.css';
 import { createNewDeal } from '../redux/asyncActions/dealsAsyncActions';
 import { AppDispatch } from '../redux/store/store';

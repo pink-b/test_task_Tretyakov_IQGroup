@@ -3,21 +3,21 @@
     "username": "postgres",
     "password": "новый_пароль",
     "database": "test_task_tretyakov_iqgroup",
-    "host": "localhost",
+    "host": "postgres",
     "dialect": "postgres"
   },
   "test": {
     "username": "postgres",
     "password": "новый_пароль",
     "database": "test_task_tretyakov_iqgroup",
-    "host": "localhost",
+    "host": "postgres",
     "dialect": "postgres"
   },
   "production": {
     "username": "postgres",
     "password": "новый_пароль",
     "database": "test_task_tretyakov_iqgroup",
-    "host": "localhost",
+    "host": "postgres",
     "dialect": "postgres"
   }
 }
