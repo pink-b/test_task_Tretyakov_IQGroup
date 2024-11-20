@@ -38,7 +38,6 @@ const DealPage: React.FC = () => {
   const [comment, setComment] = useState<string>('');
   const [isFormDirty, setIsFormDirty] = useState<boolean>(false);
   
-  // State to manage edit mode for each field
   const [editModes, setEditModes] = useState({
     status: false,
     phoneNumber: false,
@@ -92,7 +91,7 @@ const DealPage: React.FC = () => {
 
     try {
       await dispatch(updateExistingDeal({ ...deal, ...updatedDeal }));
-      resetForm();
+      // resetForm();
       setEditModes({
         status: false,
         phoneNumber: false,
@@ -103,6 +102,12 @@ const DealPage: React.FC = () => {
     } catch (error) {
       console.error('Ошибка при обновлении сделки:', error);
     }
+    const updatedDealLocal: Omit<IDeal, 'comments'> = { 
+      ...formData, 
+      id: deal.id
+    };
+    setOriginalData(updatedDealLocal)
+    setComment('')
   };
 
   const handleDelete = async () => {
@@ -117,139 +122,157 @@ const DealPage: React.FC = () => {
   };
 
   const toggleEditMode = (field: keyof typeof editModes) => {
-    setEditModes((prevModes) => ({
-      ...prevModes,
-      [field]: !prevModes[field],
-    }));
+    setEditModes((prevModes) => {
+      const isEditing = prevModes[field];
+      if (isEditing) {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [field]: originalData[field],
+        }));
+      }
+      return {
+        ...prevModes,
+        [field]: !isEditing,
+      };
+    });
   };
 
   return (
     <div className="container">
-      <div className="border-box">
-        <div className="deal-header">
-          <h2>{deal.title}</h2>
-          <button className="delete-button" onClick={handleDelete}>Удалить</button>
-        </div>
-        <StatusBar status={deal.status} />
-        <div className="form-comments-container">
-          <div className="form-section">
-            <div className="form-field">
-              <div className='form-field-title-container'>
-                <label>Статус</label>
-                <button type="button" className="edit-button" onClick={() => toggleEditMode('status')}>
-                  {editModes.status ? 'Отменить' : 'Изменить'}
-                </button>
-              </div>
-              <select
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-                className="input-background"
-                disabled={!editModes.status} // Доступность поля
-              >
-                <option value="">Выберите статус</option>
-                <option value="new">Новый</option>
-                <option value="in_progress">В работе</option>
-                <option value="almost_done">Почти завершен</option>
-                <option value="successful">Успешно</option>
-                <option value="failed">Провал</option>
-              </select>
-            </div>
-            <div className="form-field">
-              <div className='form-field-title-container'>
-                <label>Номер телефона</label>
-                <button type="button" className="edit-button" onClick={() => toggleEditMode('phoneNumber')}>
-                  {editModes.phoneNumber ? 'Отменить' : 'Изменить'}
-                </button>
-              </div>
-              <input
-                type="text"
-                name="phoneNumber"
-                value={formData.phoneNumber}
-                onChange={handleChange}
-                className="input-background"
-                disabled={!editModes.phoneNumber} // Доступность поля
-              />
-            </div>
-            <div className="form-field">
-              <div className='form-field-title-container'>
-                <label>Бюджет</label>
-                <button type="button" className="edit-button" onClick={() => toggleEditMode('budget')}>
-                  {editModes.budget ? 'Отменить' : 'Изменить'}
-                </button>
-              </div>
-              <input
-                type="text"
-                name="budget"
-                value={formData.budget}
-                onChange={handleChange}
-                className="input-background"
-                disabled={!editModes.budget} // Доступность поля
-              />
-            </div>
-            <div className="form-field">
-              <div className='form-field-title-container'>
-                <label>ФИО</label>
-                <button type="button" className="edit-button" onClick={() => toggleEditMode('fullName')}>
-                  {editModes.fullName ? 'Отменить' : 'Изменить'}
-                </button>
-              </div>
-              <input
-                type="text"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleChange}
-                className="input-background"
-                disabled={!editModes.fullName} // Доступность поля
-              />
-            </div>
-            <div className="form-field">
-              <div className='form-field-title-container'>
-                <label>Дата создания</label>
-                <button type="button" className="edit-button" onClick={() => toggleEditMode('createdAt')}>
-                  {editModes.createdAt ? 'Отменить' : 'Изменить'}
-                </button>
-              </div>
-              <input
-                type="date"
-                name="createdAt"
-                value={formData.createdAt}
-                onChange={handleChange}
-                className="input-background"
-                disabled={!editModes.createdAt} // Доступность поля
-              />
-            </div>
+  <div className="border-box">
+    <div className="deal-header">
+      <h2>{deal.title}</h2>
+      <button className="delete-button" onClick={handleDelete}>Удалить</button>
+    </div>
+    <StatusBar status={deal.status} />
+    <div className="form-comments-container">
+      <div className="form-section">
+        <div className="form-field">
+          <div className='form-field-title-container'>
+            <label>Статус</label>
+            <button type="button" className="edit-button" onClick={() => toggleEditMode('status')}>
+              {editModes.status ? 'Отменить' : 'Изменить'}
+            </button>
           </div>
+          <select
+            name="status"
+            value={formData.status}
+            onChange={handleChange}
+            className={`input-background-select-field ${editModes.status ? 'edit-mode' : ''}`}
+            disabled={!editModes.status}
+            required
+          >
+            <option value="">Выберите статус</option>
+            <option value="new">Новый</option>
+            <option value="in_progress">В работе</option>
+            <option value="almost_done">Почти завершен</option>
+            <option value="successful">Успешно</option>
+            <option value="failed">Провал</option>
+          </select>
+        </div>
+        <div className="form-field">
+          <div className='form-field-title-container'>
+            <label>Номер телефона</label>
+            <button type="button" className="edit-button" onClick={() => toggleEditMode('phoneNumber')}>
+              {editModes.phoneNumber ? 'Отменить' : 'Изменить'}
+            </button>
+          </div>
+          <input
+            type="tel"
+            name="phoneNumber"
+            value={formData.phoneNumber}
+            onChange={handleChange}
+            className={`input-background ${editModes.phoneNumber ? 'edit-mode' : ''}`}
+            disabled={!editModes.phoneNumber}
+            required
+            pattern="^\+?[0-9]{10,15}$"
+            placeholder="Введите номер телефона"
+          />
+        </div>
+        <div className="form-field">
+          <div className='form-field-title-container'>
+            <label>Бюджет</label>
+            <button type="button" className="edit-button" onClick={() => toggleEditMode('budget')}>
+              {editModes.budget ? 'Отменить' : 'Изменить'}
+            </button>
+          </div>
+          <input
+            type="number"
+            name="budget"
+            value={formData.budget}
+            onChange={handleChange}
+            className={`input-background ${editModes.budget ? 'edit-mode' : ''}`}
+            disabled={!editModes.budget}
+            required
+            min="0"
+          />
+        </div>
+        <div className="form-field">
+          <div className='form-field-title-container'>
+            <label>ФИО</label>
+            <button type="button" className="edit-button" onClick={() => toggleEditMode('fullName')}>
+              {editModes.fullName ? 'Отменить' : 'Изменить'}
+            </button>
+          </div>
+          <input
+            type="text"
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleChange}
+            className={`input-background ${editModes.fullName ? 'edit-mode' : ''}`}
+            disabled={!editModes.fullName}
+            required
+            placeholder="Введите ФИО"
+          />
+        </div>
+        <div className="form-field">
+          <div className='form-field-title-container'>
+            <label>Дата создания</label>
+            <button type="button" className="edit-button" onClick={() => toggleEditMode('createdAt')}>
+              {editModes.createdAt ? 'Отменить' : 'Изменить'}
+            </button>
+          </div>
+          <input
+            type="date"
+            name="createdAt"
+            value={formData.createdAt}
+            onChange={handleChange}
+            className={`input-background ${editModes.createdAt ? 'edit-mode' : ''}`}
+            disabled={!editModes.createdAt}
+            required
+          />
+        </div>
+      </div>
 
-          <div className="comment-section">
-            <div className="comments-input-section">
-              <h3 className="comments-header">Комментарий</h3>
-              <input
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder="Введите комментарий"
-                className="comments-input"
-              />
-            </div>
-            <div className="comment-list-section">
-              <div className="comments-list">
-                {comments.map((c, index) => (
-                  <div key={index} className="comment-item">
-                    {c.text}
-                  </div>
-                ))}
+      <div className="comment-section">
+        <div className="comments-input-section">
+          <h3 className="comments-header">Комментарий</h3>
+          <input
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            placeholder="Введите комментарий"
+            className="comments-input"
+          />
+        </div>
+        <div className="comment-list-section">
+          <div className="comments-list">
+            {comments.map((c, index) => (
+              <div key={index} className="comment-item">
+                {c.text}
               </div>
-            </div>
+            ))}
           </div>
         </div>
-        {isFormDirty && (
-          <div className="action-buttons">
-            <button onClick={handleSave}>Сохранить</button>
-            <button onClick={handleCancel}>Отменить</button>
-          </div>
-        )}
       </div>
     </div>
+    {isFormDirty && (
+      <div className="action-buttons">
+        <button onClick={handleSave}>Сохранить</button>
+        <button onClick={handleCancel}>Отменить</button>
+      </div>
+    )}
+  </div>
+</div>
   );
 };
 

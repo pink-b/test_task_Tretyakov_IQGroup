@@ -6,7 +6,7 @@ import { Comment } from '../models/comment.model';
 
 export const sequelize = new Sequelize({
   dialect: 'postgres',
-  host: process.env.DATABASE_HOST || 'postgres',
+  host: process.env.DATABASE_HOST || 'localhost',
   port: parseInt(process.env.DATABASE_PORT) || 5432,
   username: process.env.DATABASE_USER || 'postgres',
   password: process.env.DATABASE_PASSWORD || 'новый_пароль',

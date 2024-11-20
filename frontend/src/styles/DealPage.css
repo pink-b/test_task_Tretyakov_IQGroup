@@ -49,6 +49,26 @@
     padding-top: 9px;
     padding-left: 17px;
   }
+
+  .input-background-select-field {
+    background-color: rgb(237, 237, 237);
+    color: rgb(49, 49, 49);
+    height: 48px;
+    border: none;
+    width: 100%;
+    padding-bottom: 10px;
+    padding-top: 9px;
+    padding-left: 17px;
+    font-size: 24px;
+  }
+
+  .input-background-select-field.edit-mode {
+    background-color: rgb(194, 194, 194);
+  }
+
+  .input-background.edit-mode {
+    background-color: rgb(194, 194, 194);
+  }
   
   .edit-button {
     padding: 0; /* Убираем внутренние отступы */
