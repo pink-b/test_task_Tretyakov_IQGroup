@@ -8,6 +8,7 @@ import { CleanupController } from './cleanUp/cleanUp.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Deal } from './models/deal.model';
 import { Comment } from './models/comment.model';
+import { DatabaseInitService } from './database-init/database-init.service';
 
 @Module({
   imports: [
@@ -24,6 +25,6 @@ import { Comment } from './models/comment.model';
     SequelizeModule.forFeature([Deal, Comment]),
   ],
   controllers: [DealController, CommentController, CleanupController],
-  providers: [DealService, CommentService, CleanupService],
+  providers: [DealService, CommentService, CleanupService, DatabaseInitService],
 })
 export class AppModule {}

@@ -4,7 +4,7 @@
 1. Перейдите в папку приложения : cd путь до папки проекта/test_task_Tretyakov_IQGroup/
 2. Перейдите в папку backend: cd backend
 3. В папке backend ввести npm install
-4. Далее ввести npm run start
+4. Далее ввести npm run start (Убедитесь, что у вас установлен postgres)
 5. После этого, если  ошибок нет, необходимо выйти из каталога backend во frontend. 
    Делается это так: 1. cd ../
                      2. cd frontend
