@@ -23,6 +23,7 @@ export class DealController {
 
   @Patch(':id')
   async updateDeal(@Param('id') id: number, @Body() dealData: Partial<Deal>) {
+    console.log(`_____________________${id}__________________`)
     return await this.dealService.updateDeal(id, dealData);
   }
 

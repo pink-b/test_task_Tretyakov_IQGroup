@@ -17,7 +17,7 @@ import { DatabaseInitService } from './database-init/database-init.service';
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: 'новый_пароль',
+      password: 'new_password',
       database: 'test_task_tretyakov_iqgroup',
       models: [Deal, Comment],
       autoLoadModels: true,

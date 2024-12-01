@@ -9,7 +9,7 @@ export const sequelize = new Sequelize({
   host: process.env.DATABASE_HOST || 'localhost',
   port: parseInt(process.env.DATABASE_PORT) || 5432,
   username: process.env.DATABASE_USER || 'postgres',
-  password: process.env.DATABASE_PASSWORD || 'новый_пароль',
+  password: process.env.DATABASE_PASSWORD || 'new_password',
   database: process.env.DATABASE_NAME || 'test_task_tretyakov_iqgroup',
   models: [Deal, Comment],
 });

@@ -24,34 +24,44 @@ export class DealService {
   }
 
   async updateDeal(id: number, dealData: Partial<Deal>) {
+    console.log(`___________________updateDeal ID:${id}____________________`)
     const deal = await this.dealModel.findByPk(id, { include: [Comment] });
     
     if (!deal) {
       throw new NotFoundException(`Сделка с id ${id} не найдена`);
     }
-
-    deal.set(dealData);
+    console.log(`__________________________${JSON.stringify(dealData)}_____________________________`)
+    // Remove comments from dealData before updating the deal
+    const { comments, ...dealDataWithoutComments } = dealData;
+    
+    deal.set(dealDataWithoutComments);
     await deal.save();
 
-    if (dealData.comments) {
+    if (comments) {
+      console.log(`_________________commentsFromDeal:${JSON.stringify(comments)}___________________`)
+      // Delete existing comments
       await Comment.destroy({ where: { dealId: id } });
 
-      const comments = dealData.comments.map(comment => ({
-        ...comment,
+      // Prepare new comments without IDs to let Sequelize auto-generate them
+      const newComments = comments.map(comment => ({
+        text: comment.text,
         dealId: id,
+        // Optionally preserve timestamps if needed
+        createdAt: comment.createdAt,
+        updatedAt: comment.updatedAt
       }));
-  
-      await Comment.bulkCreate(comments);
+      console.log(`_________________newComments:${JSON.stringify(newComments)}___________________`)
+      // Create new comments
+      await Comment.bulkCreate(newComments);
     }
   
-    return deal;
+    // Fetch and return updated deal with new comments
+    return await this.dealModel.findByPk(id, { include: [Comment] });
   }
   
   async deleteDeal(id: number) {
     await Comment.destroy({ where: { dealId: id } });
-
     await this.dealModel.destroy({ where: { id } });
-  
     return { message: 'Сделка успешно удалена' };
   }
 }

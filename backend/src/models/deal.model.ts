@@ -1,7 +1,7 @@
 import { Column, Model, Table, HasMany } from 'sequelize-typescript';
 import { Comment } from './comment.model';
 
-@Table
+@Table({tableName:"deal"})
 export class Deal extends Model {
   @Column({ primaryKey: true, autoIncrement: true })
   id: number;
